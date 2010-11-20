@@ -2,7 +2,7 @@
 // Unit tests for OverrideToStringMethodRule
 //
 // Authors:
-//	Lex Li <lextudio@gmail.com>
+//    Lex Li <lextudio@gmail.com>
 //
 //  (C) 2010 Lex Li
 //
@@ -27,20 +27,13 @@
 //
 
 using System;
-using System.Collections.Generic;
-using Gendarme.Framework;
+using System.Diagnostics;
 using Gendarme.Rules.Design;
 using NUnit.Framework;
 using Test.Rules.Fixtures;
 
 namespace Test.Rules.Design
-{
-    public enum MyEnum
-    {
-        OK,
-        Fail
-    }
-    
+{   
     public class MyGoodOne
     {
         public override string ToString()
@@ -49,17 +42,16 @@ namespace Test.Rules.Design
         }
     }
     
-    public interface MyInterface
-    {
-        
-    }
-    
     public class MyBadOne
     {
         
     }
     
-    public delegate void MyDelegate(string message);
+    [DebuggerDisplay("Test")]
+    public class MyDebuggerDisplay
+    {
+    
+    }
     
     [TestFixture]
     public class OverrideToStringMethodTest : TypeRuleTestFixture<OverrideToStringMethodRule>
@@ -67,9 +59,10 @@ namespace Test.Rules.Design
         [Test]
         public void DoesNotApply()
         {
-            AssertRuleDoesNotApply<MyEnum>();
-            AssertRuleDoesNotApply<MyInterface>();
-            AssertRuleDoesNotApply<MyDelegate>();
+            AssertRuleDoesNotApply<SimpleTypes.Enum>();
+            AssertRuleDoesNotApply<SimpleTypes.Interface>();
+            AssertRuleDoesNotApply<SimpleTypes.Delegate>();
+            AssertRuleDoesNotApply<MyDebuggerDisplay>();
         }
         
         [Test]

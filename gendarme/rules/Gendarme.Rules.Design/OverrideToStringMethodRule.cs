@@ -28,10 +28,10 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-using Mono.Cecil;
 using Gendarme.Framework;
 using Gendarme.Framework.Helpers;
 using Gendarme.Framework.Rocks;
+using Mono.Cecil;
 
 namespace Gendarme.Rules.Design
 {
@@ -41,7 +41,7 @@ namespace Gendarme.Rules.Design
     /// <example>
     /// Bad example:
     /// <code>
-    /// class DoesNotOverrideEquals 
+    /// class DoesNotOverrideToString
     /// {
     /// }
     /// </code>
@@ -66,14 +66,15 @@ namespace Gendarme.Rules.Design
 
         public RuleResult CheckType (TypeDefinition type)
         {
-            if (type.IsEnum || type.IsInterface || type.IsDelegate () || type.IsStatic() || type.FullName.Contains("<")) 
-                // the last check replaces: type.FullName.StartsWith("<Module>") || type.FullName.StartsWith("<PrivateImplementationDetails>"))
-            {
+            if (type.IsEnum || type.IsInterface || type.IsDelegate () || type.IsStatic() || type.IsGeneratedCode()) {
+                return RuleResult.DoesNotApply;
+            }
+            
+            if (type.HasAttribute(typeof(System.Diagnostics.DebuggerDisplayAttribute).FullName)) {
                 return RuleResult.DoesNotApply;
             }
 
-            if (type.HasMethod (_toString))
-            {
+            if (type.HasMethod (_toString)) {
                 return RuleResult.Success;
             }
             
